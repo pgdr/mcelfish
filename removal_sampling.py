@@ -37,8 +37,9 @@ median = sorted(trace["N"])[len(trace["N"]) // 2]
 mm = sorted([case.hat_nz, case.hat_ncs])
 print(f"median = {median}, expected = {mm}")
 
-if "--plot" in sys.argv:
-    import matplotlib.pyplot as plt
+with basic_model:
+    if "--plot" in sys.argv:
+        import matplotlib.pyplot as plt
 
-    pm.traceplot(trace, var)
-    plt.show()
+        pm.traceplot(trace, var)
+        plt.show()
