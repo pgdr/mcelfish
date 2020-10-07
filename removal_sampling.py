@@ -9,6 +9,7 @@ import sys
 from testdata import catches
 
 SAMPLES = 50 * 1000
+TUNE = 5 * 1000
 TESTCASE = 2
 
 basic_model = pm.Model()
@@ -27,7 +28,7 @@ with basic_model:
         catch.append(q)
 
 with basic_model:
-    trace = pm.sample(draws=SAMPLES)
+    trace = pm.sample(draws=SAMPLES, tune=TUNE)
     print(pm.summary(trace))
     var = ["N", "p"]
 
