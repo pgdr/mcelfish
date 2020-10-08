@@ -41,10 +41,17 @@ with basic_model:
     print(pm.summary(trace))
     var = ["N", "p"]
 
-
-median = sorted(trace["N"])[len(trace["N"]) // 2]
+sorted_N = sorted(trace["N"])
+len_N = len(trace["N"])
+median = sorted_N[len_N // 2]
 mm = sorted([case.hat_nz, case.hat_ncs])
+print(f"{case=}")
 print(f"median = {median}, expected = {mm}")
+
+quantiles = statistics.quantiles(sorted_N)
+quantiles_s = [25, 50, 75]
+print("   ".join([f"{i}% = {round(q, 1)}" for q, i in zip(quantiles, quantiles_s)]))
+
 
 with basic_model:
     if "--plot" in sys.argv:
