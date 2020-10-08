@@ -6,7 +6,17 @@ for a constant probability of capture model.
 
 import pymc3 as pm
 import sys
+import statistics
 from testdata import catches
+
+
+def mu_sigma(data):
+    return statistics.mean(data), statistics.pstdev(data)
+
+
+all_ns_mu, all_ns_sigma = mu_sigma(
+    [c.hat_nz for c in catches] + [c.hat_ncs for c in catches]
+)
 
 SAMPLES = 50 * 1000
 TUNE = 5 * 1000
@@ -17,8 +27,7 @@ basic_model = pm.Model()
 case = catches[TESTCASE]
 
 with basic_model:
-    # prior
-    N = pm.DiscreteUniform("N", lower=0, upper=1000)
+    N = pm.Normal("N", all_ns_mu, all_ns_sigma)
     p = pm.Uniform("p", lower=0, upper=1)
 
     observations = case.data
