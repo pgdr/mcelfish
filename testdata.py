@@ -72,26 +72,26 @@ catches.append(
     )
 )
 
-
-## ??  200, 100, 50, 25
-
-_no_data_yet = """
-###
 # laks
-catches.append(Catch(
-    data = [32, 40, 12, 19, 9, 7, 8, 5, 2, 3, 1, 1, 0],
-    cs = 140,
-    cs_ci = 3.11,
-    z = 141,
-    ci = 3.38,
-))
+catches.append(
+    Catch(
+        data=[32, 40, 12, 19, 9, 7, 8, 5, 2, 3, 1, 1, 0],
+        hat_nz=141,
+        hat_ncs=140,
+        p=None,
+        x=None,
+        ci=3.38,
+    )
+)
 
 # orre
-catches.append(Catch(
-    data = [22,  9,  3,  2, 1, 1, 0, 0, 0, 0, 0, 0, 0],
-    cs = 38,
-    cs_ci = 0.06,
-    z = 38,
-    ci = 0.06,
-))
-"""
+catches.append(
+    Catch(
+        data=[22, 9, 3, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0],
+        hat_ncs=38,
+        hat_nz=38,
+        p=None,
+        x=None,
+        ci=0.06,
+    )
+)
