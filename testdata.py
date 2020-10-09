@@ -4,6 +4,10 @@ from collections import namedtuple
 ## catches, est_zippin, est_carle_strub, cathability: q = 1-p,
 Catch = namedtuple("Catch", "data hat_nz hat_ncs p x ci")
 
+# note: x is the _weighted_sum defined by
+#
+# lambda data : sum((len(data) - (1 + i)) * e for (i, e) in enumerate(data))
+
 catches = []
 
 #
