@@ -95,7 +95,7 @@ def _get_arg(args, arg):
     return None
 
 
-def _beta(data):
+def _beta(data, plot=False):
     try:
         from scipy.stats import beta
     except ImportError:
@@ -103,14 +103,15 @@ def _beta(data):
     import matplotlib.pyplot as plt
     import numpy as np
 
-    print(len(data))
     tens = len(data) // 50
     data = data[tens:-tens]
-    print(len(data))
 
     alpha_, beta_, loc_, scale_ = [round(x, 3) for x in beta.fit(data)]
     print(f"X = Beta(alpha={alpha_}, beta={beta_}, loc={loc_}, scale={scale_})")
     print(f"E[X] = a/(a+b) = {alpha_/(alpha_+beta_)+loc_}")
+
+    if not plot:
+        return alpha_, beta_, loc_, scale_
 
     x = np.linspace(
         beta.ppf(0.01, alpha_, beta_, loc_, scale_),
@@ -148,7 +149,7 @@ def main():
         _plot(model, trace, var, savefig=True)
 
     if "--beta" in args:
-        _beta(sorted_N)
+        _beta(sorted_N, plot="--plot" in args)
 
 
 if __name__ == "__main__":
