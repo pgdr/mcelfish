@@ -6,6 +6,9 @@ Catch = namedtuple("Catch", "data hat_nz hat_ncs p x ci")
 
 catches = []
 
+#
+# 0
+#
 catches.append(
     Catch(
         data=[100, 10, 1, 1, 0, 0],
@@ -17,6 +20,10 @@ catches.append(
     )  ## ???
 )
 
+
+#
+# 1
+#
 catches.append(
     Catch(
         data=[19, 17, 13, 1, 1],
@@ -72,7 +79,7 @@ catches.append(
     )
 )
 
-# laks
+# laks (5)
 catches.append(
     Catch(
         data=[32, 40, 12, 19, 9, 7, 8, 5, 2, 3, 1, 1, 0],
@@ -84,7 +91,7 @@ catches.append(
     )
 )
 
-# orre
+# orre (6)
 catches.append(
     Catch(
         data=[22, 9, 3, 2, 1, 1, 0, 0, 0, 0, 0, 0, 0],

@@ -81,7 +81,7 @@ def _plot(model, trace, var, savefig=False):
 
         pm.traceplot(trace, var)
         if savefig:
-            plt.savefig("removal.svg")
+            plt.savefig("removal.png")
         else:
             plt.show()
 
@@ -103,8 +103,14 @@ def _beta(data):
     import matplotlib.pyplot as plt
     import numpy as np
 
+    print(len(data))
+    tens = len(data) // 50
+    data = data[tens:-tens]
+    print(len(data))
+
     alpha_, beta_, loc_, scale_ = [round(x, 3) for x in beta.fit(data)]
-    print(f"Beta(alpha={alpha_}, beta={beta_}, loc={loc_}, scale={scale_})")
+    print(f"X = Beta(alpha={alpha_}, beta={beta_}, loc={loc_}, scale={scale_})")
+    print(f"E[X] = a/(a+b) = {alpha_/(alpha_+beta_)+loc_}")
 
     x = np.linspace(
         beta.ppf(0.01, alpha_, beta_, loc_, scale_),
@@ -117,6 +123,7 @@ def _beta(data):
         beta.pdf(x, alpha_, beta_, loc=loc_, scale=scale_),
         label=f"Beta({alpha_}, {beta_})",
     )
+    plt.hist(data, alpha=0.75, color="green", bins=104, density=True)
     plt.show()
 
 
@@ -137,7 +144,7 @@ def main():
     sorted_N = summary(model, trace, var)
     if "--plot" in args:
         _plot(model, trace, var)
-    elif "--svg" in args:
+    elif "--savefig" in args:
         _plot(model, trace, var, savefig=True)
 
     if "--beta" in args:
