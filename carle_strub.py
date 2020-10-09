@@ -39,6 +39,9 @@ def removal_carle_strub(data):
     raise ValueError("Unable to find CS solution")
 
 
+assert removal_carle_strub([34, 46, 22, 26, 18, 16, 20, 12]) == 264
+
+
 def removal_zippin(data):
     t = sum(data)
     k = len(data)
@@ -56,6 +59,9 @@ def removal_zippin(data):
             return lhs
 
     raise ValueError("Unable to find CS solution")
+
+
+assert removal_zippin([34, 46, 22, 26, 18, 16, 20, 12]) == 268
 
 
 def main():
