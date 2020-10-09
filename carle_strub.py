@@ -1,23 +1,11 @@
-def _cs_T(data):
-    return sum(data)
-
-
-def _cs_K(data):
-    return len(data)
-
-
-def _cs_X(data):
-    x = 0
-    k = _cs_K(data)
-    for i in range(len(data)):
-        x += (k - (1 + i)) * data[i]
-    return x
+def _weighted_sum(data):
+    return sum((len(data) - (1 + i)) * e for (i, e) in enumerate(data))
 
 
 def _z_pre_estimate(data, hatN):
-    t = _cs_T(data)
-    x = _cs_X(data)
-    k = _cs_K(data)
+    t = sum(data)
+    x = _weighted_sum(data)
+    k = len(data)
 
     tellerA = hatN - t + 0.5
     tellerB = (k * hatN - x) ** k
@@ -38,9 +26,9 @@ def _cs_Eq(t, hatN, k, x):
 
 
 def removal_carle_strub(data):
-    t = _cs_T(data)
-    x = _cs_X(data)
-    k = _cs_K(data)
+    t = sum(data)
+    x = _weighted_sum(data)
+    k = len(data)
     hatN = t
 
     for i in range(1000 * 1000):
@@ -52,9 +40,9 @@ def removal_carle_strub(data):
 
 
 def removal_zippin(data):
-    t = _cs_T(data)
-    k = _cs_K(data)
-    x = _cs_X(data)
+    t = sum(data)
+    k = len(data)
+    x = _weighted_sum(data)
     z_min = ((t - 1) * (k - 1) / 2) - 1
 
     if x <= z_min:
