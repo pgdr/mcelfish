@@ -124,7 +124,7 @@ def _beta(data, plot=False):
         beta.pdf(x, alpha_, beta_, loc=loc_, scale=scale_),
         label=f"Beta({alpha_}, {beta_})",
     )
-    plt.hist(data, alpha=0.75, color="green", bins=104, density=True)
+    plt.hist(data, alpha=0.75, color="green", bins=min(200, len(set(data))), density=True)
     plt.show()
 
 
