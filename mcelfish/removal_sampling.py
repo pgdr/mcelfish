@@ -4,9 +4,13 @@ Maximum Likelihood (ML) estimates for estimating population size (N)
 for a constant probability of capture model.
 """
 
-import pymc3 as pm
 import sys
 import statistics
+import random
+
+import numpy as np
+import pymc3 as pm
+import matplotlib.pyplot as plt
 
 
 def exit_with_usage():
@@ -21,8 +25,16 @@ removal_sampling.py --beta --data 25 10 2 3 0 1 0 0
     exit(msg)
 
 
+def _savefig(pfx=""):
+    fnameid = random.randint(10 ** 12, 10 ** 15)
+    fname = f"{pfx}{fnameid}.svg"
+    plt.savefig(fname)
+    plt.clf()
+    return fname
+
+
 def _get_testcase(n):
-    from testdata import catches
+    from .testdata import catches
 
     return catches[n].data
 
@@ -55,33 +67,32 @@ def run(samples=None, tune=None, data=None, testcase=None):
         for idx, c in enumerate(observations):
             q = pm.Binomial(f"q{idx}", N - sum(catch), p, observed=[c])
             catch.append(q)
-
-    with rm_model:
         trace = pm.sample(draws=samples, tune=tune)
-        print(pm.summary(trace))
-
-    var = ["N", "p"]
-    return rm_model, trace, var
+    return rm_model, trace
 
 
-def summary(model, trace, var):
-    sorted_N = sorted(trace["N"])
-    len_N = len(trace["N"])
-
-    quantiles = statistics.quantiles(sorted_N)
-    quantiles_s = [25, 50, 75]
-    print("   ".join([f"{i}% = {round(q, 1)}" for q, i in zip(quantiles, quantiles_s)]))
-
-    return sorted_N
-
-
-def _plot(model, trace, var, savefig=False):
+def summary(model, trace):
     with model:
-        import matplotlib.pyplot as plt
+        sorted_N = sorted(trace["N"])
+        len_N = len(trace["N"])
 
-        pm.traceplot(trace, var)
+        quantiles = statistics.quantiles(sorted_N)
+        quantiles_s = [25, 50, 75]
+        print(
+            "   ".join(
+                [f"{i}% = {round(q, 1)}" for q, i in zip(quantiles, quantiles_s)]
+            )
+        )
+
+        return pm.summary(trace), sorted_N
+
+
+def _plot(model, trace, savefig=False):
+    with model:
+
+        pm.traceplot(trace, ["N", "p"])
         if savefig:
-            plt.savefig("removal.png")
+            return _savefig("smry")
         else:
             plt.show()
 
@@ -95,13 +106,11 @@ def _get_arg(args, arg):
     return None
 
 
-def _beta(data, plot=False):
+def _beta(data, plot=False, savefig=False):
     try:
         from scipy.stats import beta
     except ImportError:
         exit("--beta needs scipy")
-    import matplotlib.pyplot as plt
-    import numpy as np
 
     tens = len(data) // 50
     data = data[tens:-tens]
@@ -110,7 +119,7 @@ def _beta(data, plot=False):
     print(f"X = Beta(alpha={alpha_}, beta={beta_}, loc={loc_}, scale={scale_})")
     print(f"E[X] = a/(a+b) = {alpha_/(alpha_+beta_)+loc_}")
 
-    if not plot:
+    if not (plot or savefig):
         return alpha_, beta_, loc_, scale_
 
     x = np.linspace(
@@ -124,8 +133,13 @@ def _beta(data, plot=False):
         beta.pdf(x, alpha_, beta_, loc=loc_, scale=scale_),
         label=f"Beta({alpha_}, {beta_})",
     )
-    plt.hist(data, alpha=0.75, color="green", bins=min(200, len(set(data))), density=True)
+    plt.hist(
+        data, alpha=0.75, color="green", bins=min(200, len(set(data))), density=True
+    )
+    if savefig:
+        return (alpha_, beta_, loc_, scale_), _savefig("beta")
     plt.show()
+    return alpha_, beta_, loc_, scale_
 
 
 def main():
@@ -141,15 +155,22 @@ def main():
     samples = _get_arg(args, "--samples")
     tune = _get_arg(args, "--tune")
 
-    model, trace, var = run(testcase=testcase, samples=samples, tune=tune, data=data)
-    sorted_N = summary(model, trace, var)
+    model, trace = run(testcase=testcase, samples=samples, tune=tune, data=data)
+    smry, sorted_N = summary(model, trace)
+    print(smry)
     if "--plot" in args:
-        _plot(model, trace, var)
+        _plot(model, trace)
     elif "--savefig" in args:
-        _plot(model, trace, var, savefig=True)
+        fname = _plot(model, trace, savefig=True)
+        print(f"wrote {fname}")
 
     if "--beta" in args:
-        _beta(sorted_N, plot="--plot" in args)
+        retval = _beta(sorted_N, plot="--plot" in args, savefig="--savefig" in args)
+        if len(retval) == 2:
+            fname = retval[1]
+            retval = retval[0]
+            print(f"wrote {fname}")
+        print(f"Beta({retval})")
 
 
 if __name__ == "__main__":

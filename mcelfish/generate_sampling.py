@@ -10,7 +10,7 @@ def _simulate(n, p):
 def main():
     p = 0
     sim = "--simulate" in sys.argv
-    args = [e for e in sys.argv if e != sim]
+    args = [e for e in sys.argv if e != "--simulate"]
     if len(args) > 1:
         N = int(args[1])
     else:
