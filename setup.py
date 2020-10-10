@@ -1,9 +1,10 @@
 import setuptools
 
 setuptools.setup(
-    version="0.0.0",
+    version="0.0.1",
     name="mcelfish",
     packages=["mcelfish"],
+    install_requires=["numpy", "matplotlib", "pymc3",],
     entry_points={
         "console_scripts": [
             "mcelfish=mcelfish:main",
