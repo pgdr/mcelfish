@@ -87,7 +87,7 @@ def summary(model, trace):
         return pm.summary(trace), sorted_N
 
 
-def _plot(model, trace, savefig=False):
+def plot(model, trace, savefig=False):
     with model:
 
         pm.traceplot(trace, ["N", "p"])
@@ -106,7 +106,7 @@ def _get_arg(args, arg):
     return None
 
 
-def _beta(data, plot=False, savefig=False):
+def beta(data, plot=False, savefig=False):
     try:
         from scipy.stats import beta
     except ImportError:
@@ -116,11 +116,11 @@ def _beta(data, plot=False, savefig=False):
     data = data[tens:-tens]
 
     alpha_, beta_, loc_, scale_ = [round(x, 3) for x in beta.fit(data)]
-    print(f"X = Beta(alpha={alpha_}, beta={beta_}, loc={loc_}, scale={scale_})")
-    print(f"E[X] = a/(a+b) = {alpha_/(alpha_+beta_)+loc_}")
+    out = f"X = Beta(alpha={alpha_}, beta={beta_}, loc={loc_}, scale={scale_})\n"
+    out += f"E[X] = a/(a+b) = {round(alpha_/(alpha_+beta_)+loc_,4)}"
 
     if not (plot or savefig):
-        return alpha_, beta_, loc_, scale_
+        return alpha_, beta_, loc_, scale_, out
 
     x = np.linspace(
         beta.ppf(0.01, alpha_, beta_, loc_, scale_),
@@ -137,9 +137,9 @@ def _beta(data, plot=False, savefig=False):
         data, alpha=0.75, color="green", bins=min(200, len(set(data))), density=True
     )
     if savefig:
-        return (alpha_, beta_, loc_, scale_), _savefig("beta")
+        return (alpha_, beta_, loc_, scale_, out), _savefig("beta")
     plt.show()
-    return alpha_, beta_, loc_, scale_
+    return alpha_, beta_, loc_, scale_, out
 
 
 def main():
@@ -157,20 +157,21 @@ def main():
 
     model, trace = run(testcase=testcase, samples=samples, tune=tune, data=data)
     smry, sorted_N = summary(model, trace)
-    print(smry)
+
     if "--plot" in args:
-        _plot(model, trace)
+        plot(model, trace)
     elif "--savefig" in args:
-        fname = _plot(model, trace, savefig=True)
+        fname = plot(model, trace, savefig=True)
         print(f"wrote {fname}")
 
     if "--beta" in args:
-        retval = _beta(sorted_N, plot="--plot" in args, savefig="--savefig" in args)
+        retval = beta(sorted_N, plot="--plot" in args, savefig="--savefig" in args)
         if len(retval) == 2:
             fname = retval[1]
             retval = retval[0]
             print(f"wrote {fname}")
-        print(f"Beta({retval})")
+        _, _, _, _, out = retval
+        print(out)
 
 
 if __name__ == "__main__":
