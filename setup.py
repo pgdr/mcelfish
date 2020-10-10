@@ -5,6 +5,11 @@ setuptools.setup(
     name="mcelfish",
     packages=["mcelfish"],
     entry_points={
-        "console_scripts": ["mcelfish=mcelfish:main", "mcelfish-gen=mcelfish:generate"]
+        "console_scripts": [
+            "mcelfish=mcelfish:main",
+            "mcelfish-gen=mcelfish:generate",
+            "mcelfish-cs=mcelfish:cs_z",
+            "mcelfish-z=mcelfish:cs_z",
+        ]
     },
 )

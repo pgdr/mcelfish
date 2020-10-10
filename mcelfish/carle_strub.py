@@ -71,9 +71,8 @@ def main():
         exit("Usage: carle_strub 30 20 10 0")
 
     data = [int(e.lstrip(",").rstrip(",")) for e in argv[1:]]
-    print(data)
-    print("cs", removal_carle_strub(data))
-    print("z ", removal_zippin(data))
+    print("cs:", removal_carle_strub(data))
+    print("z: ", removal_zippin(data))
 
 
 if __name__ == "__main__":
