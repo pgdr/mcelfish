@@ -71,18 +71,23 @@ def run(samples=None, tune=None, data=None, testcase=None):
     return rm_model, trace
 
 
+def quantiles(data):
+    steps = [25, 50, 75]
+    try:
+        qs = statistics.quantiles(data)
+    except AttributeError:
+        L = len(data)
+        qs = [data[int(L * (q / 100))] for q in steps]
+    return qs, steps
+
+
 def summary(model, trace):
     with model:
-        sorted_N = sorted(trace["N"])
+        sorted_N = list(sorted(trace["N"]))
         len_N = len(trace["N"])
 
-        quantiles = statistics.quantiles(sorted_N)
-        quantiles_s = [25, 50, 75]
-        print(
-            "   ".join(
-                [f"{i}% = {round(q, 1)}" for q, i in zip(quantiles, quantiles_s)]
-            )
-        )
+        qs, steps = quantiles(sorted_N)
+        print("   ".join([f"{i}% = {round(q, 1)}" for q, i in zip(qs, steps)]))
 
         return pm.summary(trace), sorted_N
 
