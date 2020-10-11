@@ -3,6 +3,8 @@
 #include <algorithm>
 #include <math.h>
 #include <assert.h>
+#include <random>
+
 
 float
 _weighted_sum (std::vector < int >data)
@@ -22,11 +24,6 @@ sum (std::vector < int >data)
     return s;
 }
 
-size_t
-len (std::vector < int >data)
-{
-    return data.size ();
-}
 
 
 
@@ -35,7 +32,7 @@ _z_pre_estimate (std::vector < int >data, int hatN)
 {
     auto t = sum (data);
     auto x = _weighted_sum (data);
-    auto k = len (data);
+    auto k =  data.size();
 
     auto tellerA = hatN - t + 0.5;
     auto tellerB = pow ((k * hatN - x), k);
@@ -62,7 +59,7 @@ removal_carle_strub (std::vector < int >data)
 {
     float t = sum (data);
     float x = _weighted_sum (data);
-    int k = len (data);
+    int k =  data.size();
     int hatN = t;
 
     for (int i = 0; i < 1000 * 1000; i++) {
@@ -78,7 +75,7 @@ float
 removal_zippin (std::vector < int >data)
 {
     int t = sum (data);
-    int k = len (data);
+    int k =  data.size();
     float x = _weighted_sum (data);
     auto z_min = ((t - 1) * (k - 1) / 2) - 1;
 
@@ -204,8 +201,31 @@ main ()
     t5 ();
     t6 ();
     t7 ();
-    std::vector < int >data {
-        32, 40, 12, 19, 9, 7, 8, 5, 2, 3, 1, 1, 0 };
+
+    std::random_device rd;
+    std::mt19937 e2(rd());
+    std::uniform_real_distribution<> dist(0, 1);
+
+    std::vector < int >data {};
+
+    float p = 0.3;
+    int N = 200;
+    int N_curr = N;
+    while ((N_curr > N * 0.2 && data.size() < 30)) {
+        int c = 0;
+        for (int i = 0; i < N_curr; i++) {
+            if (dist(e2) < p)
+                c += 1;
+        }
+        N_curr -= c;
+        data.push_back(c);
+
+    }
+
+    std::cout << "N = " << N << ", p = " << p << std::endl;
+    for (int i = 0; i < data.size(); i++)
+        std::cout << data[i] << " ";
+    std::cout << std::endl;
 
     auto z = removal_zippin (data);
     std::cout << "Zippin      " << z << std::endl;
