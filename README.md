@@ -51,7 +51,7 @@ Suppose that `[19, 17, 13, 1, 1]` apples fall down.  In this more
 complicated case, Bayesian statistics tell us that we should expect
 _53 ≤ N ≤ 57_ and _0.4 ≤ p ≤ 0.45_.
 
-![traceplot](https://raw.githubusercontent.com/pgdr/mcelfish/master/assets/traceplot.png)
+![traceplot](https://raw.githubusercontent.com/pgdr/mcelfish/main/assets/traceplot.png)
 
 ## Advanced MCMC usage
 
