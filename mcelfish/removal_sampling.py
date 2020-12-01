@@ -15,12 +15,12 @@ import matplotlib.pyplot as plt
 
 def exit_with_usage():
     msg = """Usage:
-removal_sampling.py --plot --testcase 3
-removal_sampling.py --data 25 10 2 3 0 1 0 0
-removal_sampling.py --samples 1000 --data 25 10 2 3 0 1 0 0
-removal_sampling.py --tuning 5000 --data 25 10 2 3 0 1 0 0
-removal_sampling.py --savefig --data 25 10 2 3 0 1 0 0
-removal_sampling.py --beta --data 25 10 2 3 0 1 0 0
+mcelfish --plot --testcase 3
+mcelfish --data 25 10 2 3 0 1 0 0
+mcelfish --samples 1000 --data 25 10 2 3 0 1 0 0
+mcelfish --tunings 5000 --data 25 10 2 3 0 1 0 0
+mcelfish --savefig --data 25 10 2 3 0 1 0 0
+mcelfish --beta --data 25 10 2 3 0 1 0 0
 """
     exit(msg)
 
@@ -158,7 +158,7 @@ def main():
     testcase = _get_arg(args, "--testcase")
     data = _get_arg(args, "--data")
     samples = _get_arg(args, "--samples")
-    tune = _get_arg(args, "--tune")
+    tune = _get_arg(args, "--tunings")
 
     model, trace = run(testcase=testcase, samples=samples, tune=tune, data=data)
     smry, sorted_N = summary(model, trace)
